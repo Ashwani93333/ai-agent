@@ -9,6 +9,7 @@ env/
 venv/
 ENV/
 *.log
+private_keys.json
 
 # Environment variables
 .env
