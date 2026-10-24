@@ -1,0 +1,35 @@
+[
+  {
+    "id": "act_scuba_grand_island",
+    "name": "Grand Island Scuba Diving & Dolphin Safari",
+    "duration": "5 hours (Morning)",
+    "rating": "4.9 ★",
+    "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "PADI Certified", "variant": "info"}],
+    "highlights": ["Coral reef exploration", "Underwater video & photos included", "Buffet lunch & snacks"],
+    "price_per_person": 3200,
+    "currency": "INR"
+  },
+  {
+    "id": "act_sunset_catamaran",
+    "name": "Mandovi Luxury Sunset Catamaran Cruise",
+    "duration": "2.5 hours (Evening)",
+    "rating": "4.8 ★",
+    "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "Romantic / Sunset", "variant": "success"}],
+    "highlights": ["Live Goan acoustic music", "Cocktails & appetizers", "Stunning Arabian sea sunset"],
+    "price_per_person": 2100,
+    "currency": "INR"
+  },
+  {
+    "id": "act_spice_plantation",
+    "name": "Sahakari Spice Plantation & Heritage Lunch",
+    "duration": "3 hours (Afternoon)",
+    "rating": "4.7 ★",
+    "image": "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "Culinary Experience", "variant": "info"}],
+    "highlights": ["Guided exotic spice tour", "Traditional banana leaf feast", "Herbal tea tasting"],
+    "price_per_person": 1400,
+    "currency": "INR"
+  }
+]

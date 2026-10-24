@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ht_taj_exotica",
+    "name": "Taj Exotica Resort & Spa, Benaulim",
+    "location": "South Goa",
+    "rating": "4.9 ★",
+    "hero_image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "Beachfront Luxury", "variant": "info"}],
+    "amenities": ["Private Beach", "Infinity Pool", "Ayurvedic Spa", "High-speed WiFi"],
+    "standard_room_price": 14500,
+    "deluxe_villa_price": 28000,
+    "currency": "INR",
+    "check_in": "14:00",
+    "check_out": "12:00"
+  },
+  {
+    "id": "ht_w_goa",
+    "name": "W Goa Beachfront Retreat, Vagator",
+    "location": "North Goa",
+    "rating": "4.8 ★",
+    "hero_image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "Sunset Views", "variant": "success"}],
+    "amenities": ["Rock Pool", "Direct Beach Access", "Live DJ Lounge", "Spa by Clarins"],
+    "standard_room_price": 12800,
+    "deluxe_villa_price": 24500,
+    "currency": "INR",
+    "check_in": "15:00",
+    "check_out": "11:00"
+  },
+  {
+    "id": "ht_heritage_fontainhas",
+    "name": "Heritage Latin Quarter Villa, Panaji",
+    "location": "Central Goa",
+    "rating": "4.7 ★",
+    "hero_image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=720&auto=format&fit=crop&q=80",
+    "badges": [{"label": "Culture & Heritage", "variant": "info"}],
+    "amenities": ["Portuguese Architecture", "Artisan Cafe", "Walk to Historic Sites"],
+    "standard_room_price": 6200,
+    "deluxe_villa_price": 11000,
+    "currency": "INR",
+    "check_in": "13:00",
+    "check_out": "11:00"
+  }
+]
