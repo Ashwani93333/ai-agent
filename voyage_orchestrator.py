@@ -436,6 +436,12 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
     )
 
 
+@chat_proto.on_message(ChatAcknowledgement)
+async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
+    """Handles incoming message acknowledgments from ASI:One."""
+    logger.debug(f"Received ACP acknowledgment for message {msg.acknowledged_msg_id} from {sender}")
+
+
 # Attach protocol to agent
 agent.include(chat_proto)
 
