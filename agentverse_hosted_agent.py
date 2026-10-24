@@ -433,17 +433,27 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
     if action == "execute_escrow":
         fet = selection.get("fet", 750.0)
         total = selection.get("total", 63750)
-        tx_hash = f"0x{uuid4().hex[:12]}...{uuid4().hex[:6]}"
+        fee = round(fet * 0.015, 2)
+        vendor_allocation = round(fet - fee, 2)
+        escrow_contract = f"fetch1escrow{uuid4().hex[:16]}"
+        tx_hash = f"0x{uuid4().hex[:32]}"
         ctx.storage.set(sender, {})
 
         confirmed = (
-            f"🎉 **BOOKING CONFIRMED & ESCROW LOCKED!**\n\n"
+            f"🎉 **BOOKING CONFIRMED & SMART ESCROW LOCKED!**\n\n"
             f"• **Lead Traveler:** {session.get('full_name', 'Rahul Sharma')}\n"
             f"• **Flight:** {session.get('flight_name', 'IndiGo 6E-602')}\n"
             f"• **Stay:** {session.get('hotel_name', 'W Goa')} (2 Nights)\n"
-            f"• **Activity:** {session.get('activity_name', 'Scuba Safari')}\n"
-            f"• **Escrow Deposit:** **{fet} FET** (₹{total:,})\n"
-            f"• **Fetch.ai Tx Hash:** `{tx_hash}`\n\n"
+            f"• **Activity:** {session.get('activity_name', 'Scuba Safari')}\n\n"
+            f"💳 **Fetch.ai Decentralized Payment Protocol Settlement:**\n"
+            f"• **Escrow Total Locked:** **{fet} FET** (₹{total:,})\n"
+            f"• **Smart Escrow Contract:** `{escrow_contract}`\n"
+            f"• **Protocol Network Fee (1.5%):** `{fee} FET`\n"
+            f"• **Vendor Allocation:** `{vendor_allocation} FET`\n"
+            f"• **Ledger Tx Hash:** `{tx_hash}`\n\n"
+            f"📋 **Milestone Escrow Release Schedule:**\n"
+            f"  1. 50% released upon airport check-in verification.\n"
+            f"  2. 50% released upon resort check-in verification.\n\n"
             f"🛡️ *Protected by Fetch.ai Payment Protocol. Vouchers sent to {session.get('email', 'guest@email.com')}.*"
         )
         await ctx.send(sender, ChatMessage(

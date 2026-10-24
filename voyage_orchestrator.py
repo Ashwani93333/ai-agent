@@ -78,6 +78,7 @@ from agents.payment_agent import (
     build_traveler_form,
     build_review_card,
     calculate_trip_totals,
+    execute_escrow_settlement,
 )
 
 # Agent setup
@@ -395,24 +396,30 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
 
     # ── Step 7: Escrow Payment Execution & Confirmation ─────────────────────────
     if action == "execute_escrow_payment":
-        totals = calculate_trip_totals(session)
-        trip_id = totals["trip_id"]
-        tx_hash = f"0x{uuid4().hex[:16]}...{uuid4().hex[:8]}"
+        escrow = execute_escrow_settlement(session)
+        trip_id = escrow["trip_id"]
 
         # Clear session for fresh bookings
         ctx.storage.set(sender, {})
 
         confirmation_text = (
-            f"🎉 **BOOKING CONFIRMED & ESCROW LOCKED!**\n\n"
+            f"🎉 **BOOKING CONFIRMED & SMART ESCROW LOCKED!**\n\n"
             f"• **Trip Reference:** `{trip_id}`\n"
             f"• **Lead Passenger:** {session.get('full_name', 'Rahul Sharma')}\n"
             f"• **Flight:** {session.get('flight_name', 'IndiGo 6E-602')} (PNR: `6E-VYG99`)\n"
             f"• **Resort:** {session.get('hotel_name', 'W Goa')} ({session.get('nights', 2)} Nights)\n"
-            f"• **Experience:** {session.get('activity_name', 'Scuba Diving Safari')}\n"
-            f"• **Escrow Settled:** **{totals['fet_tokens']} FET** (₹{totals['grand_total_inr']:,})\n"
-            f"• **Fetch Ledger Tx:** `{tx_hash}`\n\n"
-            f"🛡️ *Protected by Fetch.ai Payment Protocol. E-tickets sent to {session.get('email', 'guest@email.com')}.*\n\n"
-            "Type **'plan'** anytime to organize your next adventure!"
+            f"• **Experience:** {session.get('activity_name', 'Scuba Diving Safari')}\n\n"
+            f"💳 **Fetch.ai Decentralized Payment Protocol Settlement:**\n"
+            f"• **Escrow Total Locked:** **{escrow['total_fet']} FET** (₹{escrow['total_inr']:,})\n"
+            f"• **Smart Escrow Contract:** `{escrow['escrow_contract']}`\n"
+            f"• **Protocol Network Fee (1.5%):** `{escrow['protocol_fee_fet']} FET`\n"
+            f"• **Vendor Allocation:** `{escrow['vendor_escrow_fet']} FET`\n"
+            f"• **Ledger Tx Hash:** `{escrow['tx_hash']}`\n\n"
+            f"📋 **Milestone Escrow Release Schedule:**\n"
+            f"  1. 50% released upon airport check-in verification.\n"
+            f"  2. 50% released upon resort check-in verification.\n\n"
+            f"🛡️ *Protected by Fetch.ai Smart Escrow Protocol. E-tickets & blockchain receipt dispatched to {session.get('email', 'rahul@example.com')}.*\n\n"
+            "Type **'plan a trip'** anytime to organize your next adventure!"
         )
         await ctx.send(sender, text_message(confirmation_text))
         return
