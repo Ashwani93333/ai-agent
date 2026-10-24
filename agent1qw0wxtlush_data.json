@@ -1,0 +1,17 @@
+{
+    "agent1qvjg7nu40879cqnku0d2rp4teu42lw88t6hrlzex8crw3ed4puhascs82py": {
+        "stage": "traveler_form",
+        "flight_id": "fl_indigo_602",
+        "flight_name": "IndiGo 6E-602",
+        "flight_price": 5400,
+        "cabin_class": "economy",
+        "hotel_id": "ht_w_goa",
+        "hotel_name": "W Goa Beachfront Retreat, Vagator",
+        "hotel_price": 12800,
+        "nights": 2,
+        "room_tier": "standard",
+        "activity_id": "act_sunset_catamaran",
+        "activity_name": "Mandovi Luxury Sunset Catamaran Cruise",
+        "activity_price": 2100
+    }
+}

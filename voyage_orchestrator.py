@@ -82,7 +82,7 @@ from agents.payment_agent import (
 )
 
 # Agent setup
-SEED_PHRASE = os.getenv("VOYAGE_ORCHESTRATOR_SEED", "voyage-ai-orchestrator-hackathon-seed-2026")
+SEED_PHRASE = os.getenv("AGENT_SEED_PHRASE") or os.getenv("VOYAGE_ORCHESTRATOR_SEED", "voyage-ai-orchestrator-hackathon-seed-2026")
 PORT = int(os.getenv("PORT", "8000"))
 ENDPOINT_URL = os.getenv("AGENT_ENDPOINT_URL", f"http://127.0.0.1:{PORT}/submit")
 
@@ -151,24 +151,28 @@ def parse_incoming_selection(text: str) -> Dict[str, Any]:
       2. Natural-language prose summary (when routed via ASI:One planner LLM)
     """
     cleaned = text.strip()
-    # 1. Try parsing direct JSON
-    try:
-        data = json.loads(cleaned)
-        if isinstance(data, dict):
-            return data
-    except Exception:
-        pass
 
-    # 2. Heuristic extraction for planner prose
+    # 1. Strip leading @mention if present (e.g., @agent1q... {...})
+    cleaned_no_mention = re.sub(r"^@agent1[a-z0-9]+\s*", "", cleaned).strip()
+
+    # 2. Extract JSON dictionary block {...} if present
+    json_match = re.search(r"\{.*\}", cleaned, re.DOTALL)
+    candidates = []
+    if json_match:
+        candidates.append(json_match.group(0))
+    candidates.extend([cleaned_no_mention, cleaned])
+
+    for c in candidates:
+        try:
+            data = json.loads(c)
+            if isinstance(data, dict):
+                return data
+        except Exception:
+            pass
+
+    # 3. Heuristic extraction for planner prose
     selection: Dict[str, Any] = {}
     lower_text = cleaned.lower()
-
-    # Flight IDs
-    for fl_id in ["fl_indigo_602", "fl_airindia_815", "fl_akasa_114"]:
-        if fl_id.lower() in lower_text:
-            selection["action"] = "pick_flight"
-            selection["flight_id"] = fl_id
-            break
 
     # Cabin class
     if "business" in lower_text:
@@ -176,31 +180,45 @@ def parse_incoming_selection(text: str) -> Dict[str, Any]:
     elif "economy" in lower_text:
         selection["cabin_class"] = "economy"
 
-    # Hotel IDs
-    for ht_id in ["ht_taj_exotica", "ht_w_goa", "ht_heritage_fontainhas"]:
-        if ht_id.lower() in lower_text:
-            selection["action"] = "pick_hotel"
-            selection["hotel_id"] = ht_id
-            break
-
     # Room tier
     if "deluxe" in lower_text or "villa" in lower_text:
         selection["room_tier"] = "deluxe"
     elif "standard" in lower_text or "suite" in lower_text:
         selection["room_tier"] = "standard"
 
-    # Activity IDs
-    for act_id in ["act_scuba_grand_island", "act_sunset_catamaran", "act_spice_plantation"]:
-        if act_id.lower() in lower_text:
-            selection["action"] = "pick_activity"
-            selection["activity_id"] = act_id
-            break
-
-    # Form / Escrow actions
-    if "confirm" in lower_text or "escrow" in lower_text or "authorize" in lower_text:
+    # Actions based on explicit keywords
+    if "confirm_hotel_tier" in lower_text or ("room" in lower_text and ("deluxe" in lower_text or "standard" in lower_text)):
+        selection["action"] = "confirm_hotel_tier"
+    elif "submit_traveler_form" in lower_text:
+        selection["action"] = "submit_traveler_form"
+    elif "execute_escrow_payment" in lower_text or "confirm" in lower_text or "escrow" in lower_text or "authorize" in lower_text:
         selection["action"] = "execute_escrow_payment"
     elif "restart" in lower_text or "modify" in lower_text:
         selection["action"] = "restart_plan"
+
+    # Flight IDs
+    for fl_id in ["fl_indigo_602", "fl_airindia_815", "fl_akasa_114"]:
+        if fl_id.lower() in lower_text:
+            if "action" not in selection:
+                selection["action"] = "pick_flight"
+            selection["flight_id"] = fl_id
+            break
+
+    # Hotel IDs
+    for ht_id in ["ht_taj_exotica", "ht_w_goa", "ht_heritage_fontainhas"]:
+        if ht_id.lower() in lower_text:
+            if "action" not in selection:
+                selection["action"] = "pick_hotel"
+            selection["hotel_id"] = ht_id
+            break
+
+    # Activity IDs
+    for act_id in ["act_scuba_grand_island", "act_sunset_catamaran", "act_spice_plantation"]:
+        if act_id.lower() in lower_text:
+            if "action" not in selection:
+                selection["action"] = "pick_activity"
+            selection["activity_id"] = act_id
+            break
 
     return selection
 
@@ -450,7 +468,7 @@ async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
 
 
 # Attach protocol to agent
-agent.include(chat_proto)
+agent.include(chat_proto, publish_manifest=True)
 
 if __name__ == "__main__":
     logger.info(f"🚀 Starting VoyageAI Concierge Agent on port {PORT}...")
