@@ -83,12 +83,13 @@ from agents.payment_agent import (
 # Agent setup
 SEED_PHRASE = os.getenv("VOYAGE_ORCHESTRATOR_SEED", "voyage-ai-orchestrator-hackathon-seed-2026")
 PORT = int(os.getenv("PORT", "8000"))
+ENDPOINT_URL = os.getenv("AGENT_ENDPOINT_URL", f"http://127.0.0.1:{PORT}/submit")
 
 agent = Agent(
     name="voyage_concierge",
     seed=SEED_PHRASE,
     port=PORT,
-    endpoint=[f"http://127.0.0.1:{PORT}/submit"]
+    endpoint=[ENDPOINT_URL]
 )
 
 # Initialize Agent Chat Protocol (ACP)
